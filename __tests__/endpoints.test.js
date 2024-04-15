@@ -73,7 +73,7 @@ describe("api/articles/aritcle_id", () => {
         expect(message).toBe("invalid query");
       });
   });
-  test.only("GET 400: sends an error message when given an invalid id", () => {
+  test("GET 400: sends an error message when given an invalid id", () => {
     return request(app)
       .get("/api/articles/not_an_id")
       .expect(400)
@@ -83,3 +83,34 @@ describe("api/articles/aritcle_id", () => {
       });
   });
 });
+
+describe.only("/api/articles", () => {
+  test("GET 200: responds with an array of articles with each article having the appropriate key value pairs", () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({body}) => {
+     const {articles} = body
+     console.log
+     articles.forEach((article) => {
+      expect(typeof article.article_id).toBe("number");
+      expect(typeof article.title).toBe("string");
+      expect(typeof article.author).toBe("string");
+      expect(typeof article.comment_count).toBe("number");
+      expect(typeof article.created_at).toBe("string");
+      expect(typeof article.votes).toBe("number");
+      expect(typeof article.topic).toBe("string");
+      expect(typeof article.article_img_url).toBe("string");
+     })
+    })
+  })
+  test.only("GET 200: responds with an array of articles with each article having the appropriate key value pairs in descending order", () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({body}) => {
+     const {articles} = body
+     expect(articles).toBeSortedBy("created_at", {descending: true})
+    })
+  })
+})
