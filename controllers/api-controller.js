@@ -1,12 +1,11 @@
-const endpoints = require("../endpoints.json")
-
+const endpoints = require("../endpoints.json");
 
 const getHealthResponse = (req, res, next) => {
-    res.status(200).send()
-}
+  res.status(200).send();
+};
 
-const getApiInformation = (req,res, next) => {
-    res.status(200).send({endpoints})
-}
+const getApiInformation = (req, res, next) => {
+  res.status(200).send({ endpoints });
+};
 
-module.exports = {getHealthResponse, getApiInformation}
+module.exports = { getHealthResponse, getApiInformation };
