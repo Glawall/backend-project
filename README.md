@@ -1,3 +1,8 @@
 # Northcoders News API
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
+To create the environment variables, please create two files in the root of this repo:
+env.test
+env.development
+
+I will provide Database names seperately.
+
