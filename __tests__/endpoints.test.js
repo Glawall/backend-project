@@ -4,7 +4,7 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index.js");
 const endpoints = require("../endpoints.json");
-const { string } = require("pg-format");
+// const { string } = require("pg-format");
 
 beforeEach(() => {
   return seed(data);
@@ -47,7 +47,7 @@ describe("/api", () => {
   });
 });
 
-describe.only("api/articles/aritcle_id", () => {
+describe("api/articles/aritcle_id", () => {
   test("GET 200, responds with a sngular article object", () => {
     return request(app)
       .get("/api/articles/1")
@@ -62,6 +62,24 @@ describe.only("api/articles/aritcle_id", () => {
         expect(typeof article.votes).toBe("number");
         expect(typeof article.topic).toBe("string");
         expect(typeof article.article_img_url).toBe("string");
+      });
+  });
+  test("GET 404: sends an error message when given a valid but non-exists id", () => {
+    return request(app)
+      .get("/api/articles/999")
+      .expect(404)
+      .then(({ body} ) => {
+        const { message } = body;
+        expect(message).toBe("invalid query");
+      });
+  });
+  test.only("GET 400: sends an error message when given an invalid id", () => {
+    return request(app)
+      .get("/api/articles/not_an_id")
+      .expect(400)
+      .then(({body} ) => {
+        const {message} = body
+        expect(message).toBe("Bad request");
       });
   });
 });
