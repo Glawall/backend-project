@@ -45,3 +45,7 @@ describe("/api", () => {
       });
   });
 });
+
+describe("/api/articles/1", () => {
+    
+})
