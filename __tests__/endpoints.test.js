@@ -25,7 +25,6 @@ describe("/api/topics", () => {
         .expect(200)
         .then(({body}) => {
            let {topics} = body
-           console.log(topics)
            expect(topics.length).toBe(3)
            topics.forEach((topic) => {
             expect(typeof topic.description).toBe("string")
@@ -33,5 +32,4 @@ describe("/api/topics", () => {
            })
         })
     })
-
 })
