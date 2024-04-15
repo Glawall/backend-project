@@ -1,13 +1,17 @@
 const express = require("express")
-const {getHealthResponse} = require("./controllers/api-controller")
+const {getHealthResponse, getApiInformation} = require("./controllers/api-controller")
 const {getTopics} = require("./controllers/topics-controller")
 
 
 const app = express()
 
+app.use(express.json())
+
 app.get("/api/healthcheck", getHealthResponse)
 
 app.get("/api/topics", getTopics)
+
+app.get("/api", getApiInformation)
 
 
 
