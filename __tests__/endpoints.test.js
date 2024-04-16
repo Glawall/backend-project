@@ -133,6 +133,15 @@ describe("/api/articles/:article_id/comments", () => {
       })
     })
   })
+  test("GET 200: responds with an array of comments based on article_id provided", () => {
+    return request(app)
+    .get("/api/articles/1/comments")
+    .expect(200)
+    .then(({body})=> {
+      const {comments} = body
+      expect(comments).toBeSortedBy("created_at", {descending: true})
+    })
+  })
   test("GET 404: sends an error message when given a valid but non-exists id", () => {
     return request(app)
       .get("/api/articles/12/comments")
