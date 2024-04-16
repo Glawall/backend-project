@@ -91,7 +91,7 @@ describe("/api/articles", () => {
     .expect(200)
     .then(({body}) => {
      const {articles} = body
-      expect(articles.length).toBe(5)     
+      expect(articles.length).toBe(13)     
       articles.forEach((article) => {
       expect(typeof article.article_id).toBe("number");
       expect(typeof article.title).toBe("string");
@@ -104,7 +104,7 @@ describe("/api/articles", () => {
      })
     })
   })
-  test("GET 200: responds with an array of articles with each article having the appropriate key value pairs in descending order", () => {
+  test("GET 200: responds with an array of articles with each article having the appropriate key value pairs in descending order from date", () => {
     return request(app)
     .get("/api/articles")
     .expect(200)
