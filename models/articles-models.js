@@ -16,6 +16,7 @@ function fetchArticles() {
         .query(
             "SELECT articles.article_id, articles.title, articles.author, articles.created_at, articles.votes, articles.topic, articles.article_img_url, COUNT(articles.article_id) comment_count FROM articles JOIN comments on comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC"
         ).then(({rows}) => {
+            console.log(rows)
             return rows
         })
     }
