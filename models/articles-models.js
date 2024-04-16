@@ -20,7 +20,4 @@ function fetchArticles() {
         })
     }
 
-
-
-
-module.exports = { fetchArticle, fetchArticles };
+module.exports = { fetchArticle, fetchArticles};
