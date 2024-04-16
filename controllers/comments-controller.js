@@ -1,4 +1,4 @@
-const {fetchComments} = require("../models/comments-models")
+const {fetchComments, insertComment} = require("../models/comments-models")
 
 const getComments = (req, res, next) => {
     const {article_id} = req.params
@@ -11,4 +11,14 @@ const getComments = (req, res, next) => {
     })
   }
 
-  module.exports = {getComments}
+const postComment = (req,res,next) => {
+  const {article_id} = req.params
+  const body = req.body
+  insertComment(article_id, body).then((comment) => {
+    res.status(201).send({comment})
+  })
+  .catch((err) => {
+    next(err)
+  })
+}
+  module.exports = {getComments, postComment}

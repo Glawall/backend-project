@@ -160,4 +160,15 @@ describe("/api/articles/:article_id/comments", () => {
         expect(message).toBe("Bad request");
       });
   });
+  test.only("POST 201: posts a comment on a particular article and returns the posted comment", () => {
+    const newComment = {username: "lurker", body: "What a silly thing to say!"}
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send(newComment)
+    .expect(201)
+    .then(({body}) => {
+      const {comment} = body
+      expect(comment).toEqual(expect.objectContaining({author: "lurker", body: "What a silly thing to say!"}))
+    })
+  })
 })
