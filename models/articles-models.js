@@ -12,12 +12,28 @@ function fetchArticle(article_id) {
 }
 
 function fetchArticles() {
-        return db
-        .query(
-            "SELECT articles.article_id, articles.title, articles.author, articles.created_at, articles.votes, articles.topic, articles.article_img_url, COUNT(articles.article_id) comment_count FROM articles LEFT JOIN comments on comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC"
-        ).then(({rows}) => {
-            return rows
-        })
-    }
+  return db
+    .query(
+      "SELECT articles.article_id, articles.title, articles.author, articles.created_at, articles.votes, articles.topic, articles.article_img_url, COUNT(articles.article_id) comment_count FROM articles LEFT JOIN comments on comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC"
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
+}
 
-module.exports = { fetchArticle, fetchArticles};
+function checkArticleExists(article_id) {
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
+    .then(({ rows: articles }) => {
+      if (articles.length === 0) {
+        return Promise.reject({ status: 404, message: "article not found" });
+      }
+    });
+}
+
+
+module.exports = {
+  fetchArticle,
+  fetchArticles,
+  checkArticleExists,
+};
