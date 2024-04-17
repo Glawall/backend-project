@@ -1,6 +1,8 @@
 const app = require("./app.js");
 
 const respondCustomError = (err, req, res, next) => {
+  console.log(err)
+  console.log(err.status)
   if (err.status && err.message) {
     res.status(error.status).send({ message: error.message });
   }
@@ -17,7 +19,6 @@ const respondPSQLErrors = (err, req, res, next) => {
 };
 
 const respondInternalServerError = (err, req, res, next) => {
-  console.log(res)
   res.status(500).send("internal server error");
 };
 
