@@ -1,5 +1,5 @@
-const { fetchComments, insertComment, } = require("../models/comments-models");
-const { checkArticleExists, checkArticleHasComments } = require("../models/articles-models");
+const { fetchComments, insertComment, removeComment, checkCommentExists} = require("../models/comments-models");
+const { checkArticleExists } = require("../models/articles-models");
 
 const getComments = (req, res, next) => {
   const { article_id } = req.params;
@@ -24,4 +24,15 @@ const postComment = (req, res, next) => {
       next(err);
     });
 };
-module.exports = { getComments, postComment };
+
+const deleteComment = (req, res, next) => {
+  const {comment_id} = req.params
+  Promise.all([checkCommentExists(comment_id), removeComment(comment_id)]).then(() => {
+    res.status(204).send()
+  })
+  .catch((err) => {
+    next(err)
+  })
+
+}
+module.exports = { getComments, postComment, deleteComment };
