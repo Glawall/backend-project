@@ -82,15 +82,13 @@ describe("api/articles/aritcle_id", () => {
         expect(message).toBe("Bad request");
       });
   });
-  test.only("PATCH 200: updates an articles vote count with a provided body and returns the updated article" , () => {
+  test("PATCH 200: updates an articles vote count with a provided body and returns the updated article" , () => {
     const patchBody = {inc_votes: 1}
     return request(app)
     .patch("/api/articles/1")
     .send(patchBody)
     .expect(200)
     .then(({body}) => {
-      console.log(body)
-
         expect(body.article_id).toBe(1);
         expect(typeof body.title).toBe("string");
         expect(typeof body.author).toBe("string");
@@ -101,7 +99,7 @@ describe("api/articles/aritcle_id", () => {
         expect(typeof body.article_img_url).toBe("string")
       })
   })
-  test.only("PATCH 404 responds with an error when passed a valid but non-existent id", () => {
+  test("PATCH 404 responds with an error when passed a valid but non-existent id", () => {
     const patchBody = {inc_votes: 1}
     return request(app)
     .patch("/api/articles/999")
@@ -112,7 +110,7 @@ describe("api/articles/aritcle_id", () => {
       expect(message).toBe("article not found")
     })
   })
-  test.only("PATCH 400: sends an error message when given an invalid id", () => {
+  test("PATCH 400: sends an error message when given an invalid id", () => {
     const patchBody = {inc_votes: 1}
     return request(app)
       .patch("/api/articles/not_an_id/")
@@ -123,7 +121,7 @@ describe("api/articles/aritcle_id", () => {
         expect(message).toBe("Bad request");
       });
   });
-  test.only("PATCH 404: sends an error message when given an invalid patch object", () => {
+  test("PATCH 404: sends an error message when given an invalid patch object", () => {
     const patchBody = {votes: 1}
     return request(app)
       .patch("/api/articles/1/")
