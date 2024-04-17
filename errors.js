@@ -1,23 +1,28 @@
-const app = require("./app.js")
+const app = require("./app.js");
 
+const respondCustomError = (err, req, res, next) => {
+  if (err.status && err.message) {
+    res.status(error.status).send({ message: error.message });
+  }
+  next(err);
+};
+const respondPSQLErrors = (err, req, res, next) => {
+  if (err.code === "22P02" || err.code === "42601") {
+    res.status(400).send({ message: "Bad request" });
+  }
+  if (err.code === "23503") {
+    res.status(404).send({ message: "username not found" });
+  }
+  next(err);
+};
 
-const respondCustomError = ((err, req, res, next) => {
-        if (err.status && err.message) {
-          res.status(error.status).send({ message: error.message });
-        }
-        next(err);
-      })
-const respondPSQLErrors = ((err, req, res, next) => {
-        if (err.code === "22P02") {
-          res.status(400).send({ message: "Bad request" });
-        }
-        next(err);
-      })
+const respondInternalServerError = (err, req, res, next) => {
+  console.log(res)
+  res.status(500).send("internal server error");
+};
 
-const respondInternalServerError = ((err, req, res, next)=> {
-        res.status(500).send("internal server error");
-      })
-
-module.exports = {respondCustomError, respondPSQLErrors, respondInternalServerError}
-
-
+module.exports = {
+  respondCustomError,
+  respondPSQLErrors,
+  respondInternalServerError,
+};
