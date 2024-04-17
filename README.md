@@ -4,5 +4,5 @@ To create the environment variables, please create two files in the root of this
 env.test
 env.development
 
-I will provide Database names seperately.
+I will provide Database names on request.
 
