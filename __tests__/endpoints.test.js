@@ -163,6 +163,34 @@ describe("/api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
+  test("GET 200: responds with an array of articles on a specific topic provided in a query", () => {
+    return request(app)
+    .get("/api/articles?topic=cats")
+    .expect(200)
+    .then(({body})=> {
+      const {articles} = body
+      expect(articles.length).toBe(1)
+      articles.forEach((article) => {
+        expect(typeof article.article_id).toBe("number");
+        expect(typeof article.title).toBe("string");
+        expect(typeof article.author).toBe("string");
+        expect(typeof article.comment_count).toBe("string");
+        expect(typeof article.created_at).toBe("string");
+        expect(typeof article.votes).toBe("number");
+        expect(typeof article.topic).toBe("string");
+        expect(typeof article.article_img_url).toBe("string");
+      })
+    })
+  })
+  test("GET 404: responds with an array of articles on a specific topic provided in a query", () => {
+    return request(app)
+    .get("/api/articles?topic=not_a_topic")
+    .expect(404)
+    .then(({body})=> {
+      const {message} = body
+      expect(message).toBe("topic not found")
+    })
+  })
 });
 
 describe("/api/articles/:article_id/comments", () => {
