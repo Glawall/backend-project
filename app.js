@@ -15,7 +15,15 @@ const {
   deleteComment,
 } = require("./controllers/comments-controller");
 
-const errors = require("./errors")
+const {
+    getUsers
+  } = require("./controllers/users-controller");
+
+const {
+  respondCustomError,
+  respondInternalServerError,
+  respondPSQLErrors,
+} = require("./errors.js");
 
 const app = express();
 
@@ -35,11 +43,13 @@ app.get("/api/articles/:article_id/comments", getComments);
 
 app.post("/api/articles/:article_id/comments", postComment);
 
-app.patch("/api/articles/:article_id", patchArticle)
+app.patch("/api/articles/:article_id", patchArticle);
 
-app.delete("/api/comments/:comment_id", deleteComment)
+app.delete("/api/comments/:comment_id", deleteComment);
 
-// errors
+app.get("/api/users", getUsers)
+
+// app.use(respondInternalServerError(), respondPSQLErrors(), respondCustomError());
 
 app.use((err, req, res, next) => {
   if (err.status && err.message) {

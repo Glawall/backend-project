@@ -82,13 +82,13 @@ describe("api/articles/aritcle_id", () => {
         expect(message).toBe("Bad request");
       });
   });
-  test("PATCH 200: updates an articles vote count with a provided body and returns the updated article" , () => {
-    const patchBody = {inc_votes: 1}
+  test("PATCH 200: updates an articles vote count with a provided body and returns the updated article", () => {
+    const patchBody = { inc_votes: 1 };
     return request(app)
-    .patch("/api/articles/1")
-    .send(patchBody)
-    .expect(200)
-    .then(({body}) => {
+      .patch("/api/articles/1")
+      .send(patchBody)
+      .expect(200)
+      .then(({ body }) => {
         expect(body.article_id).toBe(1);
         expect(typeof body.title).toBe("string");
         expect(typeof body.author).toBe("string");
@@ -96,22 +96,22 @@ describe("api/articles/aritcle_id", () => {
         expect(typeof body.created_at).toBe("string");
         expect(body.votes).toBe(1);
         expect(typeof body.topic).toBe("string");
-        expect(typeof body.article_img_url).toBe("string")
-      })
-  })
+        expect(typeof body.article_img_url).toBe("string");
+      });
+  });
   test("PATCH 404 responds with an error when passed a valid but non-existent id", () => {
-    const patchBody = {inc_votes: 1}
+    const patchBody = { inc_votes: 1 };
     return request(app)
-    .patch("/api/articles/999")
-    .send(patchBody)
-    .expect(404)
-    .then(({body}) => {
-      const {message} = body
-      expect(message).toBe("article not found")
-    })
-  })
+      .patch("/api/articles/999")
+      .send(patchBody)
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("article not found");
+      });
+  });
   test("PATCH 400: sends an error message when given an invalid id", () => {
-    const patchBody = {inc_votes: 1}
+    const patchBody = { inc_votes: 1 };
     return request(app)
       .patch("/api/articles/not_an_id/")
       .send(patchBody)
@@ -122,7 +122,7 @@ describe("api/articles/aritcle_id", () => {
       });
   });
   test("PATCH 404: sends an error message when given an invalid patch object", () => {
-    const patchBody = {votes: 1}
+    const patchBody = { votes: 1 };
     return request(app)
       .patch("/api/articles/1/")
       .send(patchBody)
@@ -181,15 +181,15 @@ describe("/api/articles/:article_id/comments", () => {
           expect(typeof comment.comment_id).toBe("number");
         });
       });
-    });
-    test("GET 200: responds with an empty array when article_id provided has no comments", () => {
-      return request(app)
-        .get("/api/articles/2/comments")
-        .expect(200)
-        .then(({body}) => {
-          expect(body).toEqual([]);
-        });
-    });
+  });
+  test("GET 200: responds with an empty array when article_id provided has no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual([]);
+      });
+  });
   test("GET 200: responds with an array of comments based on article_id provided", () => {
     return request(app)
       .get("/api/articles/1/comments")
@@ -198,7 +198,7 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body).toBeSortedBy("created_at", { descending: true });
       });
   });
-  
+
   test("GET 404: sends an error message when given a valid but non-exists id", () => {
     return request(app)
       .get("/api/articles/99/comments")
@@ -275,30 +275,45 @@ describe("/api/articles/:article_id/comments", () => {
         expect(message).toBe("article not found");
       });
   });
-})
+});
 
 describe("/api/comments/:comment_id", () => {
   test("DELETE 204: deletes comment based on comment id provided, responds with a status and no content", () => {
-    return request(app)
-    .delete("/api/comments/1")
-    .expect(204)
-  })
+    return request(app).delete("/api/comments/1").expect(204);
+  });
   test("DELETE 404: returns error message when valid but non-existent comment id is provided", () => {
     return request(app)
-    .delete("/api/comments/9999")
-    .expect(404)
-    .then(({body}) => {
-      const {message} = body
-      expect(message).toBe("comment not found")
-    })
-  })
+      .delete("/api/comments/9999")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("comment not found");
+      });
+  });
   test("DELETE 400: returns error message when invalid comment-id type is provided", () => {
     return request(app)
-    .delete("/api/comments/comment_topic")
-    .expect(400)
-    .then(({body}) => {
-      const {message} = body
-      expect(message).toBe("Bad request")
-    })
-  })
-})
+      .delete("/api/comments/comment_topic")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
+  });
+});
+
+describe("/api/users", () => {
+  test("GET 200: responds with an array of user objects with a usernam, name and avatar property", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
+          expect(typeof user.username).toBe("string");
+          expect(typeof user.name).toBe("string");
+          expect(typeof user.avatar_url).toBe("string");
+        });
+      });
+  });
+});
