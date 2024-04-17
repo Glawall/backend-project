@@ -277,7 +277,7 @@ describe("/api/articles/:article_id/comments", () => {
   });
 })
 
-describe.only("/api/comments/:comment_id", () => {
+describe("/api/comments/:comment_id", () => {
   test("DELETE 204: deletes comment based on comment id provided, responds with a status and no content", () => {
     return request(app)
     .delete("/api/comments/1")
