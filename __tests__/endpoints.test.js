@@ -153,6 +153,17 @@ describe("api/articles/article_id", () => {
         expect(message).toBe("Bad request");
       });
   });
+  test("PATCH 404: sends an error message when given an invalid patch object", () => {
+    const patchBody = { inc_votes: "not a number" };
+    return request(app)
+      .patch("/api/articles/1/")
+      .send(patchBody)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
+  });
 });
 
 describe("/api/articles", () => {
@@ -322,6 +333,20 @@ describe("/api/articles/:article_id/comments", () => {
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("article not found");
+      });
+  });
+  test("POST 404, responds with an error when passed an invalid username", () => {
+    const newComment = {
+      username: "asinbrick",
+      body: "What a silly thing to say!",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("username not found");
       });
   });
 });
