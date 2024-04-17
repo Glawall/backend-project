@@ -31,9 +31,18 @@ function checkArticleExists(article_id) {
     });
 }
 
+function updateArticleVotes(article_id, inc_votes){
+if(!inc_votes.inc_votes){
+  return Promise.reject({ status: 400, message: "Bad request" });
+}
+return db.query(`UPDATE articles SET votes = ${inc_votes.inc_votes} WHERE article_id=$1 RETURNING *`, [article_id]).then(({rows}) => {
+  return rows[0]
+})
+}
 
 module.exports = {
   fetchArticle,
   fetchArticles,
   checkArticleExists,
+  updateArticleVotes
 };

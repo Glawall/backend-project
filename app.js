@@ -7,12 +7,18 @@ const { getTopics } = require("./controllers/topics-controller");
 const {
   getArticle,
   getArticles,
+  patchArticle,
 } = require("./controllers/articles-controller");
-const { getComments, postComment } = require("./controllers/comments-controller");
+const {
+  getComments,
+  postComment,
+} = require("./controllers/comments-controller");
+
+const errors = require("./errors")
 
 const app = express();
 
-app.use(express.json())
+app.use(express.json());
 
 app.get("/api/healthcheck", getHealthResponse);
 
@@ -28,6 +34,7 @@ app.get("/api/articles/:article_id/comments", getComments);
 
 app.post("/api/articles/:article_id/comments", postComment);
 
+app.patch("/api/articles/:article_id", patchArticle)
 
 // errors
 

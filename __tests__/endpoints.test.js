@@ -82,6 +82,56 @@ describe("api/articles/aritcle_id", () => {
         expect(message).toBe("Bad request");
       });
   });
+  test("PATCH 200: updates an articles vote count with a provided body and returns the updated article" , () => {
+    const patchBody = {inc_votes: 1}
+    return request(app)
+    .patch("/api/articles/1")
+    .send(patchBody)
+    .expect(200)
+    .then(({body}) => {
+        expect(body.article_id).toBe(1);
+        expect(typeof body.title).toBe("string");
+        expect(typeof body.author).toBe("string");
+        expect(typeof body.body).toBe("string");
+        expect(typeof body.created_at).toBe("string");
+        expect(body.votes).toBe(1);
+        expect(typeof body.topic).toBe("string");
+        expect(typeof body.article_img_url).toBe("string")
+      })
+  })
+  test("PATCH 404 responds with an error when passed a valid but non-existent id", () => {
+    const patchBody = {inc_votes: 1}
+    return request(app)
+    .patch("/api/articles/999")
+    .send(patchBody)
+    .expect(404)
+    .then(({body}) => {
+      const {message} = body
+      expect(message).toBe("article not found")
+    })
+  })
+  test("PATCH 400: sends an error message when given an invalid id", () => {
+    const patchBody = {inc_votes: 1}
+    return request(app)
+      .patch("/api/articles/not_an_id/")
+      .send(patchBody)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
+  });
+  test("PATCH 404: sends an error message when given an invalid patch object", () => {
+    const patchBody = {votes: 1}
+    return request(app)
+      .patch("/api/articles/1/")
+      .send(patchBody)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
+  });
 });
 
 describe("/api/articles", () => {
@@ -225,4 +275,4 @@ describe("/api/articles/:article_id/comments", () => {
         expect(message).toBe("article not found");
       });
   });
-});
+})
