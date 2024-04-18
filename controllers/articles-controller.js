@@ -19,8 +19,8 @@ const getArticle = (req, res, next) => {
 };
 
 const getArticles = (req, res, next) => {
-  const { topic } = req.query;
-  Promise.all([fetchArticles(topic), checkTopicExists(topic)])
+  const {sort_by, order, topic } = req.query;
+  Promise.all([fetchArticles(sort_by, order, topic), checkTopicExists(topic)])
     .then(([articles]) => {
       res.status(200).send({articles});
     })

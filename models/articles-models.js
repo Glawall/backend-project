@@ -14,7 +14,26 @@ function fetchArticle(article_id) {
     });
 }
 
-function fetchArticles(topic) {
+function fetchArticles(sort_by = "created_at", order = "desc", topic) {
+const validSortBys = [
+  "article_id",
+  "title",
+  "author",
+  "comment_count",
+  "created_at",
+  "votes",
+  "topic"
+]
+
+const validOrders = [
+  "asc",
+  "desc"
+]
+
+if(!validSortBys.includes(sort_by) || !validOrders.includes(order)) {
+  return Promise.reject({status: 400, message: "invalid query value"})
+}
+
   let stringQuery = `SELECT articles.article_id, articles.title, articles.author, articles.created_at, articles.votes, articles.topic, articles.article_img_url, CAST(COUNT(articles.article_id)  AS INTEGER) comment_count FROM articles LEFT JOIN comments on comments.article_id = articles.article_id `;
 
   const queryVals = [];
@@ -23,7 +42,7 @@ function fetchArticles(topic) {
     stringQuery += `WHERE topic =$1 GROUP BY articles.article_id ORDER BY created_at DESC`;
     queryVals.push(topic);
   } else {
-    stringQuery += `GROUP BY articles.article_id ORDER BY created_at DESC`;
+    stringQuery += `GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
   }
 
   return db.query(stringQuery, queryVals).then(({ rows }) => {
