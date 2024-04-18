@@ -1,10 +1,9 @@
 const app = require("./app.js");
 
 const respondCustomError = (err, req, res, next) => {
-  console.log(err)
-  console.log(err.status)
+
   if (err.status && err.message) {
-    res.status(error.status).send({ message: error.message });
+    res.status(err.status).send({ message: err.message });
   }
   next(err);
 };

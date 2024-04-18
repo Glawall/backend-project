@@ -27,9 +27,6 @@ function fetchArticles(topic) {
   }
 
   return db.query(stringQuery, queryVals).then(({ rows }) => {
-    if (rows.length === 0) {
-      return Promise.reject({ status: 404, message: "topic not found" });
-    }
     return rows;
   });
 }
