@@ -14,8 +14,8 @@ const getComments = (req, res, next) => {
 const postComment = (req, res, next) => {
   const { article_id } = req.params;
   const body = req.body;
-  Promise.all([checkArticleExists(article_id), insertComment(article_id, body)])
-    .then(([undefined, comment]) => 
+  Promise.all([insertComment(article_id, body), checkArticleExists(article_id)])
+    .then(([comment]) => 
     {
       res.status(201).send(comment[0])
   
