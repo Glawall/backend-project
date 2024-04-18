@@ -233,6 +233,42 @@ describe("/api/articles", () => {
         expect(articles).toEqual([]);
       });
   });
+  test("GET 200: responds with an array of articles with each article having the appropriate key value pairs in chosen sort by column", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy("votes", { descending: true });
+      });
+  });
+  test("GET 400: respond with an error when passed an invalid sort_by", () => {
+    return request(app)
+      .get("/api/articles?sort_by=invalid_sort_by")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid query value");
+      });
+  });
+  test("GET 200: responds with an array of articles with each article having the appropriate key value pairs in chosen order", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy("created_at", { asc: true });
+      });
+  });
+  test("GET 400: responds with an error when passed an invalid order", () => {
+    return request(app)
+      .get("/api/articles?order=not_an_order")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid query value");
+      });
+  });
 });
 
 describe("/api/articles/:article_id/comments", () => {

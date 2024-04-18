@@ -10,8 +10,8 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles, or articles by topic query",
-    "queries": ["topic"],
+    "description": "serves an array of all articles, or articles by topic query, they can also be sorted_by an column name and ordered either ascending or descending",
+    "queries": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
