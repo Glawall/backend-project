@@ -437,3 +437,36 @@ describe("/api/users", () => {
       });
   });
 });
+
+describe("/api/users/:username", () => {
+  test("GET 200: responds with a user object when provided a username", () => {
+    return request(app)
+      .get("/api/users/rogersop")
+      .expect(200)
+      .then(({ body }) => {
+        const { user } = body;
+
+        expect(user.username).toEqual("rogersop");
+        expect(typeof user.name).toEqual("string");
+        expect(typeof user.avatar_url).toEqual("string");
+      });
+  });
+  test("GET 404: responds with an error message when valid but non-existent username provided", () => {
+    return request(app)
+      .get("/api/users/asinbrick")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("user does not exist");
+      });
+  });
+  test("GET 400: responds with an error message when nonvalid username provided", () => {
+    return request(app)
+      .get("/api/users/22")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("invalid query");
+      });
+  });
+});

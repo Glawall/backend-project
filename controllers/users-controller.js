@@ -1,4 +1,4 @@
-const {fetchUsers} = require("../models/users-models")
+const {fetchUsers, fetchUser, checkUserExists} = require("../models/users-models")
 
 const getUsers = (req,res,next) => {
     fetchUsers().then((users) => {
@@ -9,4 +9,14 @@ const getUsers = (req,res,next) => {
     })
 }
 
-module.exports = {getUsers}
+const getUser = (req,res,next) => {
+    const {username} = req.params
+    Promise.all([fetchUser(username), checkUserExists(username)]).then(([user]) => {
+        res.status(200).send({user})
+    })
+    .catch((err) => {
+        next(err)
+    })
+}
+
+module.exports = {getUsers, getUser}

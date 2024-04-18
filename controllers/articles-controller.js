@@ -33,10 +33,11 @@ const patchArticle = (req, res, next) => {
   const { article_id } = req.params;
   const inc_votes = req.body;
   Promise.all([
-    checkArticleExists(article_id),
     updateArticleVotes(article_id, inc_votes),
+    checkArticleExists(article_id),
+    
   ])
-    .then(([undefined, article]) => {
+    .then(([article]) => {
       res.status(200).send(article);
     })
     .catch((err) => {
