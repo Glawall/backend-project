@@ -66,25 +66,26 @@ describe("api/articles/article_id", () => {
   });
   test("GET 200, responds with a singular article object with comment count-included", () => {
     return request(app)
-    .get("/api/articles/1")
-    .expect(200)
-    .then(({body}) => {
-      const {article} = body
-      expect(article).toEqual(
-      expect.objectContaining({
-        article_id: 1,
-        article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-        author: "butter_bridge",
-        body: "I find this existence challenging",
-        created_at: "2020-07-09T20:11:00.000Z",
-        title: "Living in the shadow of a great man",
-        topic: "mitch",
-        votes: 100,
-        comment_count: expect.any(Number)
-    })
-    )
-  })
-})
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: 1,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            votes: 100,
+            comment_count: expect.any(Number),
+          })
+        );
+      });
+  });
   test("GET 404: sends an error message when given a valid but non-exists id", () => {
     return request(app)
       .get("/api/articles/999")
@@ -197,32 +198,41 @@ describe("/api/articles", () => {
   });
   test("GET 200: responds with an array of articles on a specific topic provided in a query", () => {
     return request(app)
-    .get("/api/articles?topic=cats")
-    .expect(200)
-    .then(({body})=> {
-      const {articles} = body
-      expect(articles.length).toBe(1)
-      articles.forEach((article) => {
-        expect(typeof article.article_id).toBe("number");
-        expect(typeof article.title).toBe("string");
-        expect(typeof article.author).toBe("string");
-        expect(typeof article.comment_count).toBe("number");
-        expect(typeof article.created_at).toBe("string");
-        expect(typeof article.votes).toBe("number");
-        expect(typeof article.topic).toBe("string");
-        expect(typeof article.article_img_url).toBe("string");
-      })
-    })
-  })
-  test("GET 404: responds with an array of articles on a specific topic provided in a query", () => {
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles.length).toBe(1);
+        articles.forEach((article) => {
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.comment_count).toBe("number");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.article_img_url).toBe("string");
+        });
+      });
+  });
+  test("GET 404: responds with an error if topic does not exist", () => {
     return request(app)
-    .get("/api/articles?topic=not_a_topic")
-    .expect(404)
-    .then(({body})=> {
-      const {message} = body
-      expect(message).toBe("topic not found")
-    })
-  })
+      .get("/api/articles?topic=not_a_topic")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("topic not found");
+      });
+  });
+  test("GET 200: responds with an empty array if topic exists but there are no articles with that topic", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toEqual([]);
+      });
+  });
 });
 
 describe("/api/articles/:article_id/comments", () => {
