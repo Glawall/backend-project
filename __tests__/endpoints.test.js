@@ -269,6 +269,78 @@ describe("/api/articles", () => {
         expect(message).toBe("invalid query value");
       });
   });
+  test("POST 201: responds with the newly created article, along with comment_count", () => {
+    const newArticle = {
+      author: "lurker",
+      title: "new article",
+      body: "new article body",
+      topic: "cats",
+      article_img_url: "image url",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(201)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(typeof article.article_id).toBe("number");
+        expect(article.title).toBe("new article");
+        expect(article.author).toBe("lurker");
+        expect(article.comment_count).toBe(0);
+        expect(typeof article.created_at).toBe("string");
+        expect(typeof article.votes).toBe("number");
+        expect(article.topic).toBe("cats");
+        expect(article.article_img_url).toBe("image url");
+      });
+  });
+  test("POST 404: responds with an error when passed an object with an invalid key value for author", () => {
+    const newArticle = {
+      author: "asinbrick",
+      title: "new article",
+      body: "new article body",
+      topic: "cats",
+      article_img_url: "image url",
+    };
+    return request(app)
+    .post("/api/articles")
+    .send(newArticle)
+    .expect(404)
+    .then(({ body }) => {
+      const { message } = body;
+      expect(message).toBe("username not found")
+    });
+  });
+  test("POST 404: responds with an error when passed an object with an invalid key value for topic", () => {
+    const newArticle = {
+      author: "lurker",
+      title: "new article",
+      body: "new article body",
+      topic: "new topic",
+      article_img_url: "image url",
+    };
+    return request(app)
+    .post("/api/articles")
+    .send(newArticle)
+    .expect(404)
+    .then(({ body }) => {
+      const { message } = body;
+      expect(message).toBe("topic not found")
+    });
+  });
+  test("POST 400: responds with an error when passed an object without corect keys", () => {
+    const newArticle = {
+      author: "lurker",
+    };
+    return request(app)
+    .post("/api/articles")
+    .send(newArticle)
+    .expect(400)
+    .then(({ body }) => {
+      const { message } = body;
+      expect(message).toBe("Bad request")
+    });
+  });
+  
 });
 
 describe("/api/articles/:article_id/comments", () => {
@@ -420,37 +492,37 @@ describe("/api/comments/:comment_id", () => {
       });
   });
   test("PATCH 200: returns an updated comment with votes updated when provided an object with a key of inc_votes and a positive integer and comment_id", () => {
-    const patchBody = {inc_votes: 1}
+    const patchBody = { inc_votes: 1 };
     return request(app)
-    .patch("/api/comments/1")
-    .send(patchBody)
-    .expect(200)
-    .then(({body}) => {
-      const {comment} = body
-      expect(comment.comment_id).toBe(1)
-      expect(typeof comment.body).toBe("string")
-      expect(typeof comment.article_id).toBe("number")
-      expect(typeof comment.author).toBe("string")
-      expect(comment.votes).toBe(17)
-      expect(typeof comment.created_at).toBe("string")
-    })
-  })
+      .patch("/api/comments/1")
+      .send(patchBody)
+      .expect(200)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment.comment_id).toBe(1);
+        expect(typeof comment.body).toBe("string");
+        expect(typeof comment.article_id).toBe("number");
+        expect(typeof comment.author).toBe("string");
+        expect(comment.votes).toBe(17);
+        expect(typeof comment.created_at).toBe("string");
+      });
+  });
   test("PATCH 200: returns an updated comment with votes updated when provided an object with a key of inc_votes and a negative integer and comment_id", () => {
-    const patchBody = {inc_votes: -1}
+    const patchBody = { inc_votes: -1 };
     return request(app)
-    .patch("/api/comments/1")
-    .send(patchBody)
-    .expect(200)
-    .then(({body}) => {
-      const {comment} = body
-      expect(comment.comment_id).toBe(1)
-      expect(typeof comment.body).toBe("string")
-      expect(typeof comment.article_id).toBe("number")
-      expect(typeof comment.author).toBe("string")
-      expect(comment.votes).toBe(15)
-      expect(typeof comment.created_at).toBe("string")
-    })
-  })
+      .patch("/api/comments/1")
+      .send(patchBody)
+      .expect(200)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment.comment_id).toBe(1);
+        expect(typeof comment.body).toBe("string");
+        expect(typeof comment.article_id).toBe("number");
+        expect(typeof comment.author).toBe("string");
+        expect(comment.votes).toBe(15);
+        expect(typeof comment.created_at).toBe("string");
+      });
+  });
   test("PATCH 404 responds with an error when passed a valid but non-existent id", () => {
     const patchBody = { inc_votes: 1 };
     return request(app)
