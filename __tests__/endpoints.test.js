@@ -174,7 +174,6 @@ describe("/api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(13);
         articles.forEach((article) => {
           expect(typeof article.article_id).toBe("number");
           expect(typeof article.title).toBe("string");
@@ -267,6 +266,60 @@ describe("/api/articles", () => {
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("invalid query value");
+      });
+  });
+  test("GET 200: responds with an array of articles with each article having the appropriate key value pairs in chosen sort by column", () => {
+    return request(app)
+      .get("/api/articles?limit=12")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles.length).toBe(12);
+      });
+  });
+  test("GET 200: responds with an array of articles with each article having the appropriate key value pairs paginated to default 10 but query choice with total_count property", () => {
+    return request(app)
+      .get("/api/articles?limit=12")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body)
+        const { articles } = body;
+        expect(articles.length).toBe(12)
+        articles.forEach((article) => {
+          expect(article.total_count).toBe(13)})
+      });
+  });
+  test("GET 200: responds with an array of articles with each article having the appropriate key value pairs paginated to default 10 and paged", () => {
+    return request(app)
+      .get("/api/articles?p=2")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles.length).toBe(3)
+        articles.forEach((article) => {
+          expect(article.total_count).toBe(13)})
+      });
+  });
+  test("GET 200: responds with an array of articles with each article having the appropriate key value pairs paginated to default users choice and paged at users choice", () => {
+    return request(app)
+      .get("/api/articles?p=2&limit=5")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles.length).toBe(5)
+        articles.forEach((article) => {
+          expect(article.total_count).toBe(13)})
+      });
+  });
+  test("GET 400: responds with error, when page is valid id_type but not enough data for it to exist", () => {
+    return request(app)
+      .get("/api/articles?p=7")
+      .expect(400)
+      .then(({ body }) => {
+        console.log(body)
+        const { message } = body;
+        expect(message).toBe("Bad request")
+
       });
   });
   test("POST 201: responds with the newly created article, along with comment_count", () => {

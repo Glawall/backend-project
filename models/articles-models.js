@@ -14,7 +14,7 @@ function fetchArticle(article_id) {
     });
 }
 
-function fetchArticles(sort_by = "created_at", order = "desc", topic) {
+function fetchArticles(sort_by = "created_at", order = "desc", topic, limit = 10, p = 1) {
 const validSortBys = [
   "article_id",
   "title",
@@ -30,22 +30,27 @@ const validOrders = [
   "desc"
 ]
 
+console.log(limit)
+
+const validLimit = Number
+
 if(!validSortBys.includes(sort_by) || !validOrders.includes(order)) {
   return Promise.reject({status: 400, message: "invalid query value"})
 }
 
-  let stringQuery = `SELECT articles.article_id, articles.title, articles.author, articles.created_at, articles.votes, articles.topic, articles.article_img_url, CAST(COUNT(articles.article_id )-1  AS INTEGER) comment_count FROM articles LEFT JOIN comments on comments.article_id = articles.article_id `;
+  let stringQuery = `SELECT articles.article_id, articles.title, articles.author, articles.created_at, articles.votes, articles.topic, articles.article_img_url, (SELECT CAST(COUNT(articles.article_id) AS INTEGER) total_count FROM articles), CAST(COUNT(articles.article_id )-1 AS INTEGER) comment_count FROM articles LEFT JOIN comments on comments.article_id = articles.article_id `;
 
   const queryVals = [];
 
   if (topic) {
-    stringQuery += `WHERE topic =$1 GROUP BY articles.article_id ORDER BY created_at DESC`;
+    stringQuery += `WHERE topic =$1 GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT ${limit} OFFSET (${p}-1)*${limit}`;
     queryVals.push(topic);
   } else {
-    stringQuery += `GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
+    stringQuery += `GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT ${limit} OFFSET (${p}-1)*${limit}`;
   }
 
   return db.query(stringQuery, queryVals).then(({ rows }) => {
+    console.log(rows[0])
     return rows;
   });
 }
