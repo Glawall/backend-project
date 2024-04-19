@@ -7,7 +7,7 @@ const respondCustomError = (err, req, res, next) => {
   next(err);
 };
 const respondPSQLErrors = (err, req, res, next) => {
-  if (err.code === "22P02" || err.code === "42601") {
+  if (err.code === "22P02" || err.code === "42601" || err.code === "42703") {
     res.status(400).send({ message: "Bad request" });
   }
   if (err.code === "23503" && err.constraint === 'comments_article_id_fkey') {

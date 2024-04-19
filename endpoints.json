@@ -100,17 +100,19 @@
     "queries": [],
     "exampleResponse": 204
   },
-  "GET /api/users": {
-    "description": "serves an array of user objects",
-    "queries": [],
+  "PATCH /api/comments/:comment_id": {
+    "description": "updates a comment objects vote count, based on id",
+    "queries": ["comment_id"],
+    "exampleSends" : {"inc_votes" : 1},
     "exampleResponse": {
-      "article": [
-        {
-          "username": "rogersop",
-          "name": "paul",
-          "avatar_url": "'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4'"
-        }
-      ]
+      "comment": {
+        "article_id": 1,
+        "author": "weegembump",
+        "body": "Text from the article..",
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "votes": 1,
+        "comment_id": 1
+      }
     }
   },
   "GET /api/user": {
@@ -121,7 +123,7 @@
         {
           "username": "Seafood substitutions are increasing",
           "name": "cooking",
-          "avatar_url": "weegembump",
+          "avatar_url": "weegembump"
         }
       ]
     }
@@ -134,7 +136,7 @@
         {
           "username": "Seafood substitutions are increasing",
           "name": "cooking",
-          "avatar_url": "weegembump",
+          "avatar_url": "weegembump"
         }
     }
   }
