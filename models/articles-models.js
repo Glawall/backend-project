@@ -34,7 +34,7 @@ if(!validSortBys.includes(sort_by) || !validOrders.includes(order)) {
   return Promise.reject({status: 400, message: "invalid query value"})
 }
 
-  let stringQuery = `SELECT articles.article_id, articles.title, articles.author, articles.created_at, articles.votes, articles.topic, articles.article_img_url, CAST(COUNT(articles.article_id)  AS INTEGER) comment_count FROM articles LEFT JOIN comments on comments.article_id = articles.article_id `;
+  let stringQuery = `SELECT articles.article_id, articles.title, articles.author, articles.created_at, articles.votes, articles.topic, articles.article_img_url, CAST(COUNT(articles.article_id )-1  AS INTEGER) comment_count FROM articles LEFT JOIN comments on comments.article_id = articles.article_id `;
 
   const queryVals = [];
 
@@ -71,9 +71,22 @@ function updateArticleVotes(article_id, inc_votes) {
     });
 }
 
+function insertArticle(article) {
+  return db.query('INSERT INTO articles (author, title, body, topic, article_img_url) VALUES ($1, $2, $3, $4, $5) RETURNING *', [article.author, article.title, article.body, article.topic, article.article_img_url])
+  .then(({rows}) => {
+    const id = rows[0].article_id
+    return db.query(`SELECT articles.article_id, articles.title, articles.author, articles.body, articles.created_at, articles.votes, articles.topic, articles.article_img_url, CAST(COUNT(comments.article_id)  AS INTEGER) comment_count FROM articles LEFT JOIN comments on comments.article_id = articles.article_id WHERE articles.article_id =$1 GROUP BY articles.article_id`, [id])
+  })
+  .then(({rows}) => {
+    return rows[0]
+  })
+
+}
+
 module.exports = {
   fetchArticle,
   fetchArticles,
   checkArticleExists,
   updateArticleVotes,
+  insertArticle
 };

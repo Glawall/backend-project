@@ -12,9 +12,6 @@ function fetchComments(article_id) {
 }
 
 function insertComment(article_id, comment) {
-  if (!comment.username || !comment.body) {
-    return Promise.reject({ status: 400, message: "Bad request" });
-  }
   return db
     .query(
       "INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *",
