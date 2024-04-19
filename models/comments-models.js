@@ -39,4 +39,12 @@ function checkCommentExists(comment_id){
   });
 }
 
-module.exports = { fetchComments, insertComment, removeComment, checkCommentExists };
+function updateComment(comment_id, body){
+  return db.query(`UPDATE comments SET votes = (votes+ ${body.inc_votes}) WHERE comment_id=$1 RETURNING *`,
+  [comment_id])
+  .then(({ rows }) => {
+    return rows[0];
+  });
+}
+
+module.exports = { fetchComments, insertComment, removeComment, checkCommentExists, updateComment };

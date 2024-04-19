@@ -419,6 +419,82 @@ describe("/api/comments/:comment_id", () => {
         expect(message).toBe("Bad request");
       });
   });
+  test("PATCH 200: returns an updated comment with votes updated when provided an object with a key of inc_votes and a positive integer and comment_id", () => {
+    const patchBody = {inc_votes: 1}
+    return request(app)
+    .patch("/api/comments/1")
+    .send(patchBody)
+    .expect(200)
+    .then(({body}) => {
+      const {comment} = body
+      expect(comment.comment_id).toBe(1)
+      expect(typeof comment.body).toBe("string")
+      expect(typeof comment.article_id).toBe("number")
+      expect(typeof comment.author).toBe("string")
+      expect(comment.votes).toBe(17)
+      expect(typeof comment.created_at).toBe("string")
+    })
+  })
+  test("PATCH 200: returns an updated comment with votes updated when provided an object with a key of inc_votes and a negative integer and comment_id", () => {
+    const patchBody = {inc_votes: -1}
+    return request(app)
+    .patch("/api/comments/1")
+    .send(patchBody)
+    .expect(200)
+    .then(({body}) => {
+      const {comment} = body
+      expect(comment.comment_id).toBe(1)
+      expect(typeof comment.body).toBe("string")
+      expect(typeof comment.article_id).toBe("number")
+      expect(typeof comment.author).toBe("string")
+      expect(comment.votes).toBe(15)
+      expect(typeof comment.created_at).toBe("string")
+    })
+  })
+  test("PATCH 404 responds with an error when passed a valid but non-existent id", () => {
+    const patchBody = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/comments/999")
+      .send(patchBody)
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("comment not found");
+      });
+  });
+  test("PATCH 400: sends an error message when given an invalid id", () => {
+    const patchBody = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/comments/not_an_id/")
+      .send(patchBody)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
+  });
+  test("PATCH 404: sends an error message when given an invalid patch object", () => {
+    const patchBody = { votes: 1 };
+    return request(app)
+      .patch("/api/comments/1/")
+      .send(patchBody)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
+  });
+  test("PATCH 404: sends an error message when given an invalid patch object", () => {
+    const patchBody = { inc_votes: "not a number" };
+    return request(app)
+      .patch("/api/comments/1/")
+      .send(patchBody)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
+  });
 });
 
 describe("/api/users", () => {
