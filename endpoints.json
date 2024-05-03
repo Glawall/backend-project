@@ -9,8 +9,19 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "POST /api/topics": {
+    "description": "posts a topic to topics",
+    "queries": [],
+    "example sends" :         {
+      "skug": "Onions",
+      "description": "food"
+    },
+    "exampleResponse": {
+      "topics": [{ "slug": "Onions", "description": "food!" }]
+    }
+  },
   "GET /api/articles": {
-    "description": "serves an array of all articles, or articles by topic query, they can also be sorted_by an column name and ordered either ascending or descending",
+    "description": "serves an array of all articles, or articles by topic query, they can also be sorted_by an column name and ordered either ascending or descending. These will be paginated at a chosen limit and return a total count of all the articles",
     "queries": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -22,13 +33,14 @@
           "created_at": "2018-05-30T15:59:13.341Z",
           "votes": 0,
           "comment_count": 6
-        }
+        },
+        {"total_count" : 10}
       ]
     }
   },
   "POST /api/articles": {
     "description": "posts a new article and serves that article",
-    "queries": ["topic", "sort_by", "order"],
+    "queries": ["topic", "sort_by", "order", "limit", "paginated"],
     "example sends" :         {
       "title": "Seafood substitutions are increasing",
       "topic": "cooking",
@@ -82,9 +94,14 @@
       }
     }
   },
+  "DELETE /api/comments/:article_id": {
+    "description": "Deletes an article based on an article_id",
+    "queries": [],
+    "exampleResponse": 204
+  },
   "GET /api/articles/:article_id/comments": {
     "description": "serves an array of all comments based on article_id",
-    "queries": [],
+    "queries": ["limit", "pagination"],
     "exampleSends" : { 
       "author": "weegembump",
       "body": "Text from the comment..",
@@ -109,6 +126,15 @@
   "POST /api/articles/:article_id/comments": {
     "description": "POSTS a comment on an article based on an article_id",
     "queries": [],
+    "sends": {
+      "posted comment": {
+        "author": "weegembump",
+        "body": "Text from the comment..",
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "votes": 0,
+        "article_id": 1,
+        "comment_id": 6
+      },
     "exampleResponse": {
       "posted comment": {
         "author": "weegembump",
@@ -165,4 +191,5 @@
         }
     }
   }
+}
 }

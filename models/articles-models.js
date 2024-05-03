@@ -24,13 +24,11 @@ const validSortBys = [
   "votes",
   "topic"
 ]
-
 const validOrders = [
   "asc",
   "desc"
 ]
 
-console.log(limit)
 
 const validLimit = Number
 
@@ -50,7 +48,11 @@ if(!validSortBys.includes(sort_by) || !validOrders.includes(order)) {
   }
 
   return db.query(stringQuery, queryVals).then(({ rows }) => {
-    console.log(rows[0])
+    console.log(rows)
+    // if(rows[0] === undefined){
+    //   return Promise.reject({status: 400, message: "Bad request"})
+    
+    // }
     return rows;
   });
 }

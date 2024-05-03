@@ -229,6 +229,7 @@ describe("/api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
+        console.log(articles)
         expect(articles).toEqual([]);
       });
   });
@@ -311,15 +312,31 @@ describe("/api/articles", () => {
           expect(article.total_count).toBe(13)})
       });
   });
-  test("GET 400: responds with error, when page is valid id_type but not enough data for it to exist", () => {
+  test("GET 200: responds with an empty array, when page is valid id_type but not enough data for it to exist", () => {
     return request(app)
       .get("/api/articles?p=7")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toEqual([]);
+      });
+  });
+  test("GET 400: responds with an error, when page is invalid id_type", () => {
+    return request(app)
+      .get("/api/articles?p=not_a_number")
       .expect(400)
       .then(({ body }) => {
-        console.log(body)
         const { message } = body;
-        expect(message).toBe("Bad request")
-
+        expect(message).toEqual("Bad request");
+      });
+  });
+  test("GET 400: responds with an error, when limit is invalid id_type", () => {
+    return request(app)
+      .get("/api/articles?limit=not_a_number")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toEqual("Bad request");
       });
   });
   test("POST 201: responds with the newly created article, along with comment_count", () => {
