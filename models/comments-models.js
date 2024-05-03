@@ -7,6 +7,7 @@ function fetchComments(article_id) {
       [article_id]
     )
     .then(({ rows }) => {
+      console.log(rows)
       return rows;
     });
 }

@@ -21,12 +21,13 @@ const getArticle = (req, res, next) => {
 };
 
 const getArticles = (req, res, next) => {
-  const {sort_by, order, topic } = req.query;
-  Promise.all([fetchArticles(sort_by, order, topic), checkTopicExists(topic)])
+  const {sort_by, order, topic, limit, p} = req.query;
+  Promise.all([fetchArticles(sort_by, order, topic, limit, p), checkTopicExists(topic)])
     .then(([articles]) => {
       res.status(200).send({articles});
     })
     .catch((err) => {
+      console.log(err)
       next(err);
     });
 };
