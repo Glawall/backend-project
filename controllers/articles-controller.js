@@ -66,6 +66,6 @@ const deleteArticle = (req,res, next) => {
   .catch((err) => {
     next(err)
   })
-
 }
+
 module.exports = { getArticle, getArticles, patchArticle, postArticle, deleteArticle };
