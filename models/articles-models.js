@@ -83,7 +83,10 @@ function insertArticle(article) {
   .then(({rows}) => {
     return rows[0]
   })
+}
 
+function removeArticle(article_id) {
+  return db.query(`DELETE FROM articles WHERE article_id =$1`, [article_id])
 }
 
 module.exports = {
@@ -91,5 +94,6 @@ module.exports = {
   fetchArticles,
   checkArticleExists,
   updateArticleVotes,
-  insertArticle
+  insertArticle,
+  removeArticle
 };

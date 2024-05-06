@@ -1,7 +1,6 @@
 const db = require("../db/connection");
 
 function fetchComments(article_id, limit=10, p=1) {
-  console.log(p)
   return db
     .query(
       `SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC LIMIT ${limit} OFFSET (${p}-1)*${limit}`,
