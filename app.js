@@ -7,11 +7,14 @@ const {
   respondPSQLErrors,
 } = require("./errors.js");
 
-const apiRouter = require("./routes/api-routers");
-
 app.use(cors());
 
+
+const apiRouter = require("./routes/api-routers");
+
+
 const app = express();
+
 
 app.use(express.json());
 
