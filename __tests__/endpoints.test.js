@@ -269,7 +269,7 @@ describe("/api/articles", () => {
         expect(message).toBe("invalid query value");
       });
   });
-  test("GET 200: responds with an array of articles with each article having the appropriate key value pairs in chosen sort by column", () => {
+  test("GET 200: responds with an array of articles sset to a certain limit", () => {
     return request(app)
       .get("/api/articles?limit=12")
       .expect(200)
@@ -463,6 +463,24 @@ describe("/api/articles/:article_id/comments", () => {
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("Bad request");
+      });
+  });
+  test.only("GET 200: responds with an array of articles sset to a certain limit", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=4")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body)
+        const { comments } = body;
+        expect(body.length).toBe(4);
+      });
+  });
+  test.only("GET 200: responds with an array of comments with each article having the appropriate key value pairs paginated to default 10 and paged", () => {
+    return request(app)
+      .get("/api/articles/1/comments?p=2")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.length).toBe(1)
       });
   });
   test("POST 201: posts a comment on a particular article and returns the posted comment", () => {

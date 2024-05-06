@@ -1,13 +1,13 @@
 const db = require("../db/connection");
 
-function fetchComments(article_id) {
+function fetchComments(article_id, limit=10, p=1) {
+  console.log(p)
   return db
     .query(
-      `SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC`,
+      `SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC LIMIT ${limit} OFFSET (${p}-1)*${limit}`,
       [article_id]
     )
     .then(({ rows }) => {
-      console.log(rows)
       return rows;
     });
 }
