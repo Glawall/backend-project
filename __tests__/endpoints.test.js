@@ -34,6 +34,34 @@ describe("/api/topics", () => {
         });
       });
   });
+  test("POST 201: responds with the newly created topic, along with", () => {
+    const newTopic = {
+      slug: "topic name",
+      description: "topic description",
+    };
+    return request(app)
+      .post("/api/topics")
+      .send(newTopic)
+      .expect(201)
+      .then(({ body }) => {
+        const { topic } = body;
+        expect(topic.slug).toBe("topic name");
+        expect(topic.description).toBe("topic description");
+      });
+  });
+  test("POST 400: responds with an error when passed an object without corect keys", () => {
+    const newTopic = {
+      slug: "lurker",
+    };
+    return request(app)
+    .post("/api/topics")
+    .send(newTopic)
+    .expect(400)
+    .then(({ body }) => {
+      const { message } = body;
+      expect(message).toBe("Bad request")
+    });
+  });
 });
 
 describe("/api", () => {
@@ -159,6 +187,27 @@ describe("api/articles/article_id", () => {
     return request(app)
       .patch("/api/articles/1/")
       .send(patchBody)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
+  });
+  test("DELETE 204: deletes article based on article id provided, responds with a status and no content", () => {
+    return request(app).delete("/api/articles/1").expect(204);
+  });
+  test("DELETE 404: returns error message when valid but non-existent comment id is provided", () => {
+    return request(app)
+      .delete("/api/articles/9999")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("article not found");
+      });
+  });
+  test("DELETE 400: returns error message when invalid comment-id type is provided", () => {
+    return request(app)
+      .delete("/api/articles/article_id")
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
@@ -419,7 +468,7 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
-        expect(body.length).toBe(11);
+        expect(body.length).toBe(10);
         body.forEach((comment) => {
           expect(comment.article_id).toBe(1);
           expect(typeof comment.body).toBe("string");
@@ -465,22 +514,47 @@ describe("/api/articles/:article_id/comments", () => {
         expect(message).toBe("Bad request");
       });
   });
-  test.only("GET 200: responds with an array of articles sset to a certain limit", () => {
+  test("GET 200: responds with an array of articles sset to a certain limit", () => {
     return request(app)
       .get("/api/articles/1/comments?limit=4")
       .expect(200)
       .then(({ body }) => {
-        console.log(body)
         const { comments } = body;
         expect(body.length).toBe(4);
       });
   });
-  test.only("GET 200: responds with an array of comments with each article having the appropriate key value pairs paginated to default 10 and paged", () => {
+  test("GET 200: responds with an array of comments with each article having the appropriate key value pairs paginated to default 10 and paged", () => {
     return request(app)
       .get("/api/articles/1/comments?p=2")
       .expect(200)
       .then(({ body }) => {
         expect(body.length).toBe(1)
+      });
+  });
+  test("GET 200: responds with an array of comments with each article having the appropriate key value pairs paginated to default 10 and paged", () => {
+    return request(app)
+      .get("/api/articles/1/comments?p=3")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual([])
+      });
+  });
+  test("GET 400: responds with an error, when page is invalid id_type", () => {
+    return request(app)
+      .get("/api/articles/1/comments?p=not_a_number")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toEqual("Bad request");
+      });
+  });
+  test("GET 400: responds with an error, when limit is invalid id_type", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=not_a_number")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toEqual("Bad request");
       });
   });
   test("POST 201: posts a comment on a particular article and returns the posted comment", () => {

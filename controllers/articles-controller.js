@@ -3,7 +3,8 @@ const {
   fetchArticles,
   updateArticleVotes,
   checkArticleExists,
-  insertArticle
+  insertArticle,
+  removeArticle
 } = require("../models/articles-models");
 
 const { checkTopicExists } = require("../models/topics-models")
@@ -27,7 +28,6 @@ const getArticles = (req, res, next) => {
       res.status(200).send({articles});
     })
     .catch((err) => {
-      console.log(err)
       next(err);
     });
 };
@@ -57,4 +57,15 @@ const postArticle = (req,res,next) => {
     next(err)
   })
 }
-module.exports = { getArticle, getArticles, patchArticle, postArticle };
+
+const deleteArticle = (req,res, next) => {
+  const {article_id} = req.params
+  Promise.all([checkArticleExists(article_id), removeArticle(article_id)]).then(() => {
+    res.status(204).send()
+  })
+  .catch((err) => {
+    next(err)
+  })
+
+}
+module.exports = { getArticle, getArticles, patchArticle, postArticle, deleteArticle };
