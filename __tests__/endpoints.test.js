@@ -132,7 +132,7 @@ describe("api/articles/article_id", () => {
         expect(message).toBe("Bad request");
       });
   });
-  test("PATCH 200: updates an articles vote count with a provided body and returns the updated article", () => {
+  test.only("PATCH 200: updates an articles vote count with a provided body and returns the updated article", () => {
     const patchBody = { inc_votes: 1 };
     return request(app)
       .patch("/api/articles/1")

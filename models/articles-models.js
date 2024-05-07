@@ -66,7 +66,7 @@ function checkArticleExists(article_id) {
 function updateArticleVotes(article_id, inc_votes) {
   return db
     .query(
-      `UPDATE articles SET votes = ${inc_votes.inc_votes} WHERE article_id=$1 RETURNING *`,
+      `UPDATE articles SET votes = votes + ${inc_votes.inc_votes} WHERE article_id=$1 RETURNING *`,
       [article_id]
     )
     .then(({ rows }) => {
