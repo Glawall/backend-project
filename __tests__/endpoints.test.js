@@ -4,7 +4,6 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index.js");
 const endpoints = require("../endpoints.json");
-// const { string } = require("pg-format");
 
 beforeEach(() => {
   return seed(data);
@@ -54,13 +53,13 @@ describe("/api/topics", () => {
       slug: "lurker",
     };
     return request(app)
-    .post("/api/topics")
-    .send(newTopic)
-    .expect(400)
-    .then(({ body }) => {
-      const { message } = body;
-      expect(message).toBe("Bad request")
-    });
+      .post("/api/topics")
+      .send(newTopic)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
   });
 });
 
@@ -132,7 +131,7 @@ describe("api/articles/article_id", () => {
         expect(message).toBe("Bad request");
       });
   });
-  test.only("PATCH 200: updates an articles vote count with a provided body and returns the updated article", () => {
+  test("PATCH 200: updates an articles vote count with a provided body and returns the updated article", () => {
     const patchBody = { inc_votes: 1 };
     return request(app)
       .patch("/api/articles/1")
@@ -144,7 +143,7 @@ describe("api/articles/article_id", () => {
         expect(typeof body.author).toBe("string");
         expect(typeof body.body).toBe("string");
         expect(typeof body.created_at).toBe("string");
-        expect(body.votes).toBe(1);
+        expect(body.votes).toBe(101);
         expect(typeof body.topic).toBe("string");
         expect(typeof body.article_img_url).toBe("string");
       });
@@ -278,7 +277,6 @@ describe("/api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        console.log(articles)
         expect(articles).toEqual([]);
       });
   });
@@ -332,11 +330,11 @@ describe("/api/articles", () => {
       .get("/api/articles?limit=12")
       .expect(200)
       .then(({ body }) => {
-        console.log(body)
         const { articles } = body;
-        expect(articles.length).toBe(12)
+        expect(articles.length).toBe(12);
         articles.forEach((article) => {
-          expect(article.total_count).toBe(13)})
+          expect(article.total_count).toBe(13);
+        });
       });
   });
   test("GET 200: responds with an array of articles with each article having the appropriate key value pairs paginated to default 10 and paged", () => {
@@ -345,9 +343,10 @@ describe("/api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(3)
+        expect(articles.length).toBe(3);
         articles.forEach((article) => {
-          expect(article.total_count).toBe(13)})
+          expect(article.total_count).toBe(13);
+        });
       });
   });
   test("GET 200: responds with an array of articles with each article having the appropriate key value pairs paginated to default users choice and paged at users choice", () => {
@@ -356,9 +355,10 @@ describe("/api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles.length).toBe(5)
+        expect(articles.length).toBe(5);
         articles.forEach((article) => {
-          expect(article.total_count).toBe(13)})
+          expect(article.total_count).toBe(13);
+        });
       });
   });
   test("GET 200: responds with an empty array, when page is valid id_type but not enough data for it to exist", () => {
@@ -421,13 +421,13 @@ describe("/api/articles", () => {
       article_img_url: "image url",
     };
     return request(app)
-    .post("/api/articles")
-    .send(newArticle)
-    .expect(404)
-    .then(({ body }) => {
-      const { message } = body;
-      expect(message).toBe("username not found")
-    });
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("username not found");
+      });
   });
   test("POST 404: responds with an error when passed an object with an invalid key value for topic", () => {
     const newArticle = {
@@ -438,28 +438,27 @@ describe("/api/articles", () => {
       article_img_url: "image url",
     };
     return request(app)
-    .post("/api/articles")
-    .send(newArticle)
-    .expect(404)
-    .then(({ body }) => {
-      const { message } = body;
-      expect(message).toBe("topic not found")
-    });
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("topic not found");
+      });
   });
   test("POST 400: responds with an error when passed an object without corect keys", () => {
     const newArticle = {
       author: "lurker",
     };
     return request(app)
-    .post("/api/articles")
-    .send(newArticle)
-    .expect(400)
-    .then(({ body }) => {
-      const { message } = body;
-      expect(message).toBe("Bad request")
-    });
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Bad request");
+      });
   });
-  
 });
 
 describe("/api/articles/:article_id/comments", () => {
@@ -474,7 +473,7 @@ describe("/api/articles/:article_id/comments", () => {
           expect(typeof comment.body).toBe("string");
           expect(typeof comment.votes).toBe("number");
           expect(typeof comment.author).toBe("string");
-          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author_avatar_url).toBe("string");
           expect(typeof comment.comment_id).toBe("number");
         });
       });
@@ -528,7 +527,7 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments?p=2")
       .expect(200)
       .then(({ body }) => {
-        expect(body.length).toBe(1)
+        expect(body.length).toBe(1);
       });
   });
   test("GET 200: responds with an array of comments with each article having the appropriate key value pairs paginated to default 10 and paged", () => {
@@ -536,7 +535,7 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments?p=3")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual([])
+        expect(body).toEqual([]);
       });
   });
   test("GET 400: responds with an error, when page is invalid id_type", () => {
