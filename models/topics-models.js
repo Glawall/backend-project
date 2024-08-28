@@ -6,6 +6,20 @@ function fetchTopics() {
   });
 }
 
+function fetchTopic(slug) {
+  return db
+    .query(
+      `SELECT topics.slug, topics.description FROM topics WHERE topics.slug=$1`,
+      [slug]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, message: "invalid query" });
+      }
+      return rows[0];
+    });
+}
+
 function checkTopicExists(topic) {
   if (!topic) {
     return topic;
@@ -20,8 +34,8 @@ function checkTopicExists(topic) {
 }
 
 function insertTopic(topic) {
-  if(!topic.slug || !topic.description){
-    return Promise.reject({status: 400, message:"Bad request" })
+  if (!topic.slug || !topic.description) {
+    return Promise.reject({ status: 400, message: "Bad request" });
   }
   return db
     .query(
@@ -32,4 +46,14 @@ function insertTopic(topic) {
       return rows[0];
     });
 }
-module.exports = { fetchTopics, checkTopicExists, insertTopic };
+
+function removeTopic(slug) {
+  return db.query(`DELETE FROM topics WHERE topics.slug =$1`, [slug]);
+}
+module.exports = {
+  fetchTopics,
+  fetchTopic,
+  checkTopicExists,
+  insertTopic,
+  removeTopic,
+};

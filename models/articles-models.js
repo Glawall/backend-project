@@ -95,6 +95,7 @@ function insertArticle(article) {
       );
     })
     .then(({ rows }) => {
+      console.log(rows[0]);
       return rows[0];
     });
 }
